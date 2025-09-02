@@ -70,12 +70,33 @@ class Easykey < Formula
   end
 
   def caveats
-    <<~EOS
+    app_staged = "#{prefix}/EasyKey.app"
+    app_installed = File.exist?("#{Dir.home}/Applications/EasyKey.app")
+    
+    message = <<~EOS
       EasyKey has been installed successfully!
 
       Components installed:
       • CLI tool: Available in your PATH as 'easykey'
-      • macOS app: Installed to ~/Applications/EasyKey.app
+    EOS
+    
+    if File.exist?(app_staged)
+      if app_installed
+        message += "• macOS app: Successfully installed to ~/Applications/EasyKey.app\n"
+      else
+        message += <<~EOS
+          • macOS app: Built and staged (needs manual installation)
+          
+          To complete the app installation, run:
+            cp -r #{app_staged} ~/Applications/
+            
+          Or use the automatic post-install (may require sudo):
+            brew postinstall easykey
+        EOS
+      end
+    end
+    
+    message += <<~EOS
 
       The CLI tool and app store secrets securely in the macOS keychain and use
       biometric authentication (Touch ID/Face ID) when available.
@@ -98,6 +119,8 @@ class Easykey < Formula
       For Python and Node.js packages, visit:
       https://github.com/kingofmac/easykey
     EOS
+    
+    message
   end
 
   test do
