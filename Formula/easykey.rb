@@ -17,12 +17,14 @@ class Easykey < Formula
 
     # Build and install the macOS app
     cd "app" do
-      # Build the app using xcodebuild with code signing and sandboxing disabled
+      # Build the app using xcodebuild with all restrictions disabled for Homebrew
       system "xcodebuild", "-project", "app.xcodeproj", "-scheme", "app", 
              "-configuration", "Release", "-derivedDataPath", "./build",
              "CODE_SIGN_IDENTITY=", "CODE_SIGNING_REQUIRED=NO", 
              "CODE_SIGNING_ALLOWED=NO", "DEVELOPMENT_TEAM=",
-             "ENABLE_APP_SANDBOX=NO", "ENABLE_HARDENED_RUNTIME=NO"
+             "ENABLE_APP_SANDBOX=NO", "ENABLE_HARDENED_RUNTIME=NO",
+             "ENABLE_USER_SCRIPT_SANDBOXING=NO", "OTHER_SWIFT_FLAGS=-disable-sandbox",
+             "-destination", "generic/platform=macOS"
       
       # Find the built app - try multiple possible locations
       possible_paths = [
