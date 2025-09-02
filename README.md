@@ -10,15 +10,24 @@ First, tap this repository:
 brew tap kingofmac/easykey https://github.com/kingofmac/homebrew-easykey
 ```
 
-Then install EasyKey:
+Then install EasyKey (both CLI and macOS app):
 
 ```bash
-brew install easykey
+brew install easykey --build-from-source
 ```
+
+**Note**: The `--build-from-source` flag is required to build both the CLI tool and macOS app from source on your machine.
+
+## What Gets Installed
+
+When you install EasyKey via Homebrew, you get:
+
+- 🖥️ **CLI Tool** - Command-line interface for managing secrets (installed to PATH)
+- 📱 **macOS App** - Beautiful native app with Touch ID/Face ID (installed to ~/Applications/)
 
 ## About EasyKey
 
-EasyKey is a comprehensive macOS solution that stores your secrets securely in the system keychain with biometric authentication. It includes:
+EasyKey is a comprehensive macOS solution that stores your secrets securely in the system keychain with biometric authentication. The complete ecosystem includes:
 
 - 🖥️ **CLI Tool** - Command-line interface for managing secrets
 - 📱 **macOS App** - Beautiful native app with Touch ID/Face ID
@@ -27,7 +36,7 @@ EasyKey is a comprehensive macOS solution that stores your secrets securely in t
 
 ## Quick Start
 
-After installation:
+### Using the CLI Tool
 
 ```bash
 # Store a secret
@@ -42,6 +51,13 @@ easykey list
 # Get help
 easykey --help
 ```
+
+### Using the macOS App
+
+1. Open **EasyKey** from ~/Applications/ or press Cmd+Space and search "EasyKey"
+2. Authenticate with Touch ID/Face ID
+3. Click **"+ Add"** to store your first secret
+4. Search, view, copy, and manage secrets with the intuitive interface
 
 ## Security Features
 
