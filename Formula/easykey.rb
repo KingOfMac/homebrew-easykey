@@ -17,10 +17,11 @@ class Easykey < Formula
 
     # Build and install the macOS app
     cd "app" do
-      # Build the app using xcodebuild
+      # Build the app using xcodebuild with code signing disabled
       system "xcodebuild", "-project", "app.xcodeproj", "-scheme", "app", 
              "-configuration", "Release", "-derivedDataPath", "./build",
-             "SYMROOT=./build", "DSTROOT=./build/dst"
+             "CODE_SIGN_IDENTITY=", "CODE_SIGNING_REQUIRED=NO", 
+             "CODE_SIGNING_ALLOWED=NO", "DEVELOPMENT_TEAM="
       
       # Find the built app - try multiple possible locations
       possible_paths = [
