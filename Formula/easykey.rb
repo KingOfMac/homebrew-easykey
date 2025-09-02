@@ -17,15 +17,35 @@ class Easykey < Formula
 
     # Build and install the macOS app
     cd "app" do
+      # Build the app using xcodebuild
       system "xcodebuild", "-project", "app.xcodeproj", "-scheme", "app", 
-             "-configuration", "Release", "-derivedDataPath", "./build"
+             "-configuration", "Release", "-derivedDataPath", "./build",
+             "SYMROOT=./build", "DSTROOT=./build/dst"
       
-      # Install the app to Applications
-      app_path = "./build/Build/Products/Release/EasyKey.app"
-      if File.exist?(app_path)
-        system "/bin/cp", "-r", app_path, "#{ENV["HOME"]}/Applications/"
+      # Find the built app - try multiple possible locations
+      possible_paths = [
+        "./build/Build/Products/Release/EasyKey.app",
+        "./build/dst/Applications/EasyKey.app",
+        "./build/Release/EasyKey.app"
+      ]
+      
+      app_path = possible_paths.find { |path| File.exist?(path) }
+      
+      if app_path
+        # Ensure Applications directory exists
+        applications_dir = "#{ENV["HOME"]}/Applications"
+        system "mkdir", "-p", applications_dir
+        
+        # Remove existing installation
+        existing_app = "#{applications_dir}/EasyKey.app"
+        system "rm", "-rf", existing_app if File.exist?(existing_app)
+        
+        # Copy the app
+        system "/bin/cp", "-r", app_path, applications_dir
+        ohai "EasyKey.app installed to #{applications_dir}/EasyKey.app"
       else
-        opoo "EasyKey.app not found at expected location, skipping app installation"
+        opoo "EasyKey.app not found at any expected location, skipping app installation"
+        opoo "Searched: #{possible_paths.join(', ')}"
       end
     end
   end
