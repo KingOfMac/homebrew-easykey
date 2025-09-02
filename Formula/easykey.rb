@@ -36,21 +36,36 @@ class Easykey < Formula
       app_path = possible_paths.find { |path| File.exist?(path) }
       
       if app_path
-        # Ensure Applications directory exists
-        applications_dir = "#{ENV["HOME"]}/Applications"
-        system "mkdir", "-p", applications_dir
-        
-        # Remove existing installation
-        existing_app = "#{applications_dir}/EasyKey.app"
-        system "rm", "-rf", existing_app if File.exist?(existing_app)
-        
-        # Copy the app
-        system "/bin/cp", "-r", app_path, applications_dir
-        ohai "EasyKey.app installed to #{applications_dir}/EasyKey.app"
+        # Use a post-install script approach to install to the real user directory
+        # Create a staging area in the Cellar
+        app_staging = "#{prefix}/EasyKey.app"
+        system "/bin/cp", "-r", app_path, app_staging
+        ohai "EasyKey.app staged in Cellar for installation"
       else
         opoo "EasyKey.app not found at any expected location, skipping app installation"
         opoo "Searched: #{possible_paths.join(', ')}"
       end
+    end
+  end
+
+  def post_install
+    # Install the app to the user's Applications directory after Homebrew installation
+    app_staging = "#{prefix}/EasyKey.app"
+    if File.exist?(app_staging)
+      # Get the real user's home directory
+      real_home = `echo ~`.strip
+      applications_dir = "#{real_home}/Applications"
+      
+      # Ensure Applications directory exists
+      system "mkdir", "-p", applications_dir
+      
+      # Remove existing installation
+      existing_app = "#{applications_dir}/EasyKey.app"
+      system "rm", "-rf", existing_app if File.exist?(existing_app)
+      
+      # Copy the app to the real user's Applications directory
+      system "/bin/cp", "-r", app_staging, applications_dir
+      ohai "EasyKey.app installed to #{applications_dir}/EasyKey.app"
     end
   end
 
